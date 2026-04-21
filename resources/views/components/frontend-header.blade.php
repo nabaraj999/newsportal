@@ -1,104 +1,93 @@
-<header class="sticky top-0 z-50 bg-white">
-    <div class="container py-4 flex justify-between items-center">
-        <div>
-            <img class="h-[40px] md:h-[80px]" src="{{ asset($company->logo) }}" alt="">
-        </div>
-        <div class="flex items-center gap-4">
-            <div>
-                <p>{{ nepalidate(now()) }}</p>
-                <img class="h-2 md:h-4" src="https://jawaaf.com/frontend/images/redline.png" alt="">
+<header class="bg-white shadow-lg border-b-4 border-blue-600 sticky top-0 z-50">
+    <!-- Top Bar -->
+    <div class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white text-xs py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex gap-6 items-center">
+                <span class="font-semibold">{{ nepalidate(now()) }}</span>
+                @if($company)
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-envelope text-blue-400"></i>
+                        {{ $company->email }}
+                    </span>
+                @endif
             </div>
-            <a href="{{ route('login') }}" class="bg-[var(--primary)] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">
-                Login
-            </a>
+            <div class="flex gap-4 items-center">
+                @if($company)
+                    @if($company->facebook)
+                        <a href="{{ $company->facebook }}" target="_blank" class="hover:text-blue-400 transition"><i class="fab fa-facebook-f"></i></a>
+                    @endif
+                    @if($company->instagram)
+                        <a href="{{ $company->instagram }}" target="_blank" class="hover:text-pink-400 transition"><i class="fab fa-instagram"></i></a>
+                    @endif
+                    @if($company->youtube)
+                        <a href="{{ $company->youtube }}" target="_blank" class="hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+                    @endif
+                @endif
+                <a href="{{ route('login') }}" class="hover:text-yellow-400 font-semibold transition">Login</a>
+            </div>
         </div>
     </div>
 
-    <nav class="bg-[var(--primary)] text-white py-2">
-        <div class="container hidden lg:flex justify-between items-center">
-            <ul class="flex gap-6">
-                <li>
-                    <a href="{{ route('home') }}">गृहपृष्ठ</a>
-                </li>
-                @foreach ($categories as $index => $cat)
-                    @if ($index < 7)
-                        <li>
-                            <a href="{{ route('category', $cat->slug) }}">{{ $cat->title }}</a>
-                        </li>
-                    @endif
-                @endforeach
-
-                @if (count($categories) > 7)
-                    <button id="dropdownDefaultButton" class="flex items-center" data-dropdown-toggle="dropdown"
-                        type="button">more <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 4 4 4-4" />
-                        </svg>
-                    </button>
-                    <div id="dropdown"
-                        class="z-10 hidden bg-[var(--primary)] divide-y divide-gray-100 rounded-lg shadow-sm w-44">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                            aria-labelledby="dropdownDefaultButton">
-                            @foreach ($categories as $index => $cat)
-                                @if ($index >= 7)
-                                    <li>
-                                        <a href="{{ route('category', $cat->slug) }}"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $cat->title }}</a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </div>
+    <!-- Main Header -->
+    <div class="container mx-auto px-4 py-5">
+        <div class="flex justify-between items-center gap-6">
+            <div class="flex items-center gap-3 flex-shrink-0">
+                @if($company && $company->logo)
+                    <img class="h-16 w-auto" src="{{ asset($company->logo) }}" alt="Logo">
+                @else
+                    <div class="text-3xl font-black text-blue-600">📰</div>
                 @endif
-            </ul>
-            <div>
-                <form action="" method="get" class="relative">
-                    <input type="text" name="search" placeholder="Search">
-                    <button type="submit" class="absolute text-[#424242] right-2 top-2 text-xl"><i
-                            class="fa-solid fa-magnifying-glass"></i></button>
+                <div>
+                    @if($company)
+                        <h1 class="text-2xl font-black text-gray-900">{{ $company->name }}</h1>
+                        <p class="text-xs text-gray-600">Your Trusted News Source</p>
+                    @else
+                        <h1 class="text-2xl font-black text-gray-900">Global News</h1>
+                    @endif
+                </div>
+            </div>
+            <div class="flex-1 hidden lg:block">
+                <form method="GET" action="{{ route('home') }}" class="flex gap-2">
+                    <input type="search" name="q" placeholder="Search articles..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition font-semibold">
+                    <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"><i class="fas fa-search"></i></button>
                 </form>
             </div>
         </div>
+    </div>
 
-        <div class="container flex justify-end lg:hidden">
-            <button class="text-2xl" type="button" data-drawer-target="drawer-example"
-                data-drawer-show="drawer-example" aria-controls="drawer-example">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <ul class="flex items-center overflow-x-auto">
+                <li class="px-4 py-4 hover:bg-blue-900 cursor-pointer transition border-b-4 border-transparent hover:border-white">
+                    <a href="{{ route('home') }}" class="font-bold flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                @foreach ($categories ?? [] as $index => $cat)
+                    @if ($index < 6)
+                    <li class="px-4 py-4 hover:bg-blue-900 cursor-pointer transition border-b-4 border-transparent hover:border-white">
+                        <a href="{{ route('category', $cat->slug) }}" class="font-bold whitespace-nowrap">{{ $cat->title }}</a>
+                    </li>
+                    @endif
+                @endforeach
+                @if ((count($categories ?? []) ?? 0) > 6)
+                <li class="px-4 py-4 hover:bg-blue-900 cursor-pointer transition border-b-4 border-transparent hover:border-white relative group">
+                    <button class="font-bold flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-ellipsis-h"></i> More
+                    </button>
+                    <div class="hidden group-hover:block absolute left-0 top-full bg-white text-gray-800 shadow-2xl min-w-max border-t-4 border-blue-600">
+                        @foreach ($categories ?? [] as $index => $cat)
+                            @if ($index >= 6)
+                            <a href="{{ route('category', $cat->slug) }}" class="block px-6 py-3 hover:bg-blue-50 font-semibold transition border-b border-gray-100 last:border-b-0">
+                                {{ $cat->title }}
+                            </a>
+                            @endif
+                        @endforeach
+                    </div>
+                </li>
+                @endif
+            </ul>
         </div>
     </nav>
 </header>
-
-<div id="drawer-example"
-    class="fixed bg-[var(--primary)] text-white top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full w-80"
-    tabindex="-1" aria-labelledby="drawer-label">
-    <div>
-        <h5 class="text-2xl font-semibold py-5">
-            Menu
-        </h5>
-    </div>
-    <button type="button" data-drawer-hide="drawer-example" aria-controls="drawer-example"
-        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
-        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-        </svg>
-        <span class="sr-only">Close menu</span>
-    </button>
-
-
-    <ul class="flex flex-col gap-6">
-        <li>
-            <a href="">गृहपृष्ठ</a>
-        </li>
-        @foreach ($categories as $index => $cat)
-            <li>
-                <a href="">{{ $cat->title }}</a>
-            </li>
-        @endforeach
-        <li>
-            <a href="{{ route('login') }}" class="block py-2">Login</a>
-        </li>
-    </ul>
-</div>
