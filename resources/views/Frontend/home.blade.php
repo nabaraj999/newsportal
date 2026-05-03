@@ -1,172 +1,164 @@
-<x-frontend-layout :title="'Home'" :description="'Global News Network - Your trusted source for news'" :keywords="'news, latest news, breaking news'">
-    <!-- Hero/Featured Section -->
-    <section class="bg-gradient-to-b from-blue-50 to-white py-12">
+<x-frontend-layout :title="$metaTitle" :description="$metaDescription" :keywords="$metaKeywords">
+    <!-- Hero Grid Section -->
+    <section class="py-8 bg-white border-b border-slate-100">
         <div class="container mx-auto px-4">
             @if($latest_articles->count() > 0)
-                @php $featured = $latest_articles->first(); @endphp
-                <div class="rounded-2xl overflow-hidden shadow-2xl group bg-white">
-                    <div class="grid md:grid-cols-3 gap-0">
-                        <div class="md:col-span-2 overflow-hidden h-96 md:h-full">
-                            <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                                 src="{{ asset($featured->image) }}" alt="{{ $featured->title }}">
-                        </div>
-                        <div class="p-8 md:p-10 flex flex-col justify-between">
-                            <div>
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    @foreach($featured->categories as $cat)
-                                        <span class="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-md">
-                                            {{ $cat->title }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                                <h1 class="text-3xl md:text-4xl font-black text-gray-900 group-hover:text-blue-600 transition mb-4 leading-tight">
-                                    {{ $featured->title }}
-                                </h1>
-                                <p class="text-gray-700 leading-relaxed mb-6 line-clamp-4 text-sm md:text-base">
-                                    {!! strip_tags(substr($featured->content, 0, 200)) !!}...
-                                </p>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Main Featured (Left, 2/4 columns on LG) -->
+                <div class="lg:col-span-2 group">
+                    @php $featured = $latest_articles->first(); @endphp
+                    <div class="relative h-[300px] sm:h-[500px] overflow-hidden rounded-2xl shadow-lg">
+                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                             src="{{ asset($featured->image) }}" alt="{{ $featured->title }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-6 sm:p-10 text-white">
+                            <div class="flex gap-2 mb-4">
+                                @foreach($featured->categories->take(2) as $cat)
+                                    <span class="bg-primary-600 text-white text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full">
+                                        {{ $cat->title }}
+                                    </span>
+                                @endforeach
                             </div>
-                            <div class="flex gap-4 items-center">
-                                <a href="{{ route('article', $featured->id) }}" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all">
-                                    Read Story
-                                </a>
-                                <span class="text-gray-600 font-semibold flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg">
-                                    <i class="fas fa-eye text-blue-600"></i> {{ number_format($featured->views) }}
-                                </span>
+                            <h1 class="text-2xl sm:text-4xl font-black mb-4 leading-tight group-hover:text-primary-400 transition-colors">
+                                <a href="{{ route('article', $featured->id) }}">{{ $featured->title }}</a>
+                            </h1>
+                            <div class="flex items-center gap-4 text-xs font-bold text-slate-300 uppercase tracking-widest">
+                                <span>{{ $featured->created_at->format('M d, Y') }}</span>
+                                <span class="w-1 h-1 bg-primary-500 rounded-full"></span>
+                                <span><i class="far fa-eye mr-1"></i> {{ number_format($featured->views) }} Views</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Secondary Featured (Right, 2/4 columns on LG) -->
+                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    @foreach($latest_articles->skip(1)->take(4) as $article)
+                        <div class="group">
+                            <div class="relative h-48 sm:h-56 overflow-hidden rounded-xl shadow-md mb-3">
+                                <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                     src="{{ asset($article->image) }}" alt="{{ $article->title }}">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                @if($article->categories->isNotEmpty())
+                                    <div class="absolute top-3 left-3 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                                        <span class="bg-primary-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                                            {{ $article->categories->first()->title }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+                            <h3 class="text-base sm:text-lg font-black text-slate-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-snug">
+                                <a href="{{ route('article', $article->id) }}">{{ $article->title }}</a>
+                            </h3>
+                            <div class="mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <span>{{ $article->created_at->format('M d, Y') }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
             @endif
         </div>
     </section>
 
-    <!-- Quick Stats -->
-    <section class="bg-white py-6 border-b border-gray-200">
+    <!-- Main Content & Sidebar -->
+    <section class="py-12 bg-slate-50">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                <div class="p-4">
-                    <p class="text-3xl font-bold text-blue-600">{{ $latest_articles->count() }}</p>
-                    <p class="text-gray-600 text-sm">Total Articles</p>
-                </div>
-                <div class="p-4">
-                    <p class="text-3xl font-bold text-blue-600">{{ $categories->count() }}</p>
-                    <p class="text-gray-600 text-sm">Categories</p>
-                </div>
-                <div class="p-4">
-                    <p class="text-3xl font-bold text-blue-600">{{ number_format($latest_articles->sum('views')) }}</p>
-                    <p class="text-gray-600 text-sm">Total Views</p>
-                </div>
-                <div class="p-4">
-                    <p class="text-3xl font-bold text-blue-600">{{ now()->format('Y') }}</p>
-                    <p class="text-gray-600 text-sm">Since Year</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Latest Articles Grid -->
-    <section class="bg-white py-16 border-b border-gray-200">
-        <div class="container mx-auto px-4">
-            <div class="mb-12">
-                <h2 class="text-4xl font-black text-gray-900 mb-2">Latest News</h2>
-                <div class="w-20 h-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full"></div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach ($latest_articles->skip(1)->take(6) as $article)
-                    <div class="group cursor-pointer">
-                        <div class="relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 mb-4">
-                            <div class="h-64 overflow-hidden">
-                                <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                                     src="{{ asset($article->image) }}" alt="{{ $article->title }}">
-                            </div>
-                            <div class="absolute top-4 left-4 flex gap-2 flex-wrap">
-                                @foreach($article->categories->take(2) as $cat)
-                                    <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{{ $cat->title }}</span>
-                                @endforeach
-                            </div>
+            <div class="flex flex-col lg:flex-row gap-12">
+                
+                <!-- Main News Column -->
+                <div class="lg:w-2/3 space-y-16">
+                    
+                    <!-- Dynamic Category Sections -->
+                    @foreach ($categories->take(3) as $category)
+                    <div class="space-y-8">
+                        <div class="flex items-end justify-between border-b-2 border-slate-200 pb-2">
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 uppercase tracking-tighter">
+                                {{ $category->title }}<span class="text-primary-600">.</span>
+                            </h2>
+                            <a href="{{ route('category', $category->slug) }}" class="text-xs font-black uppercase tracking-widest text-primary-600 hover:text-primary-800 transition-colors mb-1">
+                                View All Category
+                            </a>
                         </div>
-                        <div class="px-2">
-                            <h3 class="text-xl font-black text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition">
-                                {{ $article->title }}
-                            </h3>
-                            <p class="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
-                                {!! strip_tags(substr($article->content, 0, 100)) !!}
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="{{ route('article', $article->id) }}" class="text-blue-600 font-bold hover:text-blue-800 flex items-center gap-2 group/link">
-                                    Read More 
-                                    <i class="fas fa-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
-                                </a>
-                                <span class="text-gray-500 text-sm font-semibold flex items-center gap-1">
-                                    <i class="fas fa-eye text-blue-500"></i> {{ number_format($article->views) }}
-                                </span>
-                            </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            @forelse($category->articles->where('status', 'approved')->take(4) as $article)
+                                <x-article-card :article="$article" />
+                            @empty
+                                <p class="text-slate-500 italic text-sm">No articles in this category yet.</p>
+                            @endforelse
                         </div>
                     </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
+                    @endforeach
 
-    <!-- Category-Wise News Sections -->
-    @foreach ($categories as $category)
-        <section class="py-16 {{ $loop->even ? 'bg-gray-50' : 'bg-white' }} border-b border-gray-200">
-            <div class="container mx-auto px-4">
-                <div class="flex items-center justify-between mb-12">
-                    <div>
-                        <h2 class="text-4xl font-black text-gray-900">{{ $category->title }}</h2>
-                        <div class="w-16 h-1 bg-blue-600 rounded-full mt-2"></div>
+                    <!-- Newsletter Banner (Professional) -->
+                    <div class="bg-primary-900 rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-primary-800/30 rounded-full -translate-y-32 translate-x-32 blur-3xl"></div>
+                        <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-1 text-center md:text-left">
+                                <h2 class="text-2xl sm:text-4xl font-black text-white mb-4">Never miss a story.</h2>
+                                <p class="text-primary-200 text-sm sm:text-lg">Join 25,000+ subscribers for our weekly curated news analysis and deep dives.</p>
+                            </div>
+                            <form class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+                                <input type="email" placeholder="Email address" class="px-6 py-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary-400 bg-white shadow-lg text-slate-900 w-full md:w-64">
+                                <button class="bg-primary-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-primary-700 transition shadow-lg hover:shadow-xl whitespace-nowrap">
+                                    Join Now
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <a href="{{ route('category', $category->slug) }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
-                        Explore All
-                    </a>
-                </div>
 
-                @if($category->articles->count() > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        @forelse($category->articles->take(4) as $article)
-                            <div class="group rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white">
-                                <div class="h-40 overflow-hidden">
-                                    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
-                                         src="{{ asset($article->image) }}" alt="{{ $article->title }}">
-                                </div>
-                                <div class="p-5">
-                                    <h4 class="font-bold text-gray-900 line-clamp-2 mb-3 group-hover:text-blue-600 transition">
-                                        {{ $article->title }}
+                    <!-- Additional Categories -->
+                    @foreach ($categories->skip(3)->take(3) as $category)
+                    <div class="space-y-8">
+                        <div class="flex items-end justify-between border-b-2 border-slate-200 pb-2">
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 uppercase tracking-tighter">
+                                {{ $category->title }}<span class="text-primary-600">.</span>
+                            </h2>
+                            <a href="{{ route('category', $category->slug) }}" class="text-xs font-black uppercase tracking-widest text-primary-600 hover:text-primary-800 transition-colors mb-1">
+                                Explore More
+                            </a>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            @foreach($category->articles->where('status', 'approved')->take(3) as $article)
+                                <div class="group">
+                                    <div class="relative h-40 overflow-hidden rounded-xl mb-4 shadow-sm">
+                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="{{ asset($article->image) }}" alt="{{ $article->title }}">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        @if($article->categories->isNotEmpty())
+                                            <div class="absolute top-3 left-3 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                                                <span class="bg-primary-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                                                    {{ $article->categories->first()->title }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <h4 class="text-sm sm:text-base font-bold text-slate-900 group-hover:text-primary-600 transition-colors line-clamp-2">
+                                        <a href="{{ route('article', $article->id) }}">{{ $article->title }}</a>
                                     </h4>
-                                    <a href="{{ route('article', $article->id) }}" class="text-blue-600 text-sm font-bold hover:text-blue-800 flex items-center gap-2 group/link">
-                                        Read
-                                        <i class="fas fa-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
-                                    </a>
                                 </div>
-                            </div>
-                        @empty
-                            <p class="text-gray-500 col-span-full text-center py-8">No articles available</p>
-                        @endforelse
+                            @endforeach
+                        </div>
                     </div>
-                @else
-                    <p class="text-gray-500 text-center py-12">No articles in {{ $category->title }} yet</p>
-                @endif
-            </div>
-        </section>
-    @endforeach
+                    @endforeach
 
-    <!-- Newsletter Section -->
-    <section class="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 py-16">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto text-center">
-                <h2 class="text-4xl font-black text-white mb-4">Never Miss Breaking News</h2>
-                <p class="text-blue-100 mb-8 text-lg">Subscribe to our newsletter and get the latest news delivered to your inbox daily</p>
-                <form class="flex gap-2 flex-col sm:flex-row">
-                    <input type="email" placeholder="Enter your email address" required class="flex-1 px-5 py-4 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300 text-gray-900 placeholder-gray-500 font-semibold">
-                    <button type="submit" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl whitespace-nowrap">
-                        Subscribe Now
-                    </button>
-                </form>
-                <p class="text-blue-200 text-sm mt-4">We respect your privacy. No spam, ever.</p>
+                </div>
+
+                <!-- Sidebar (Professional Column) -->
+                <div class="lg:w-1/3">
+                    <x-frontend-sidebar />
+                </div>
+
             </div>
         </div>
     </section>
+
+    <!-- Professional Background Texture Utility -->
+    <style>
+        .bg-grid-slate-100 {
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
 </x-frontend-layout>

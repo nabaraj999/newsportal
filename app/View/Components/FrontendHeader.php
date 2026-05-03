@@ -23,6 +23,12 @@ class FrontendHeader extends Component
     public function render(): View|Closure|string
     {
         $company = Company::first();
-        return view('components.frontend-header', ['company' => $company]);
+        $categories = \App\Models\Category::all();
+        $latest_news = \App\Models\Article::latest()->take(5)->get();
+        return view('components.frontend-header', [
+            'company' => $company,
+            'categories' => $categories,
+            'latest_news' => $latest_news,
+        ]);
     }
 }

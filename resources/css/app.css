@@ -3,6 +3,97 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import "flowbite/src/themes/default";
-@plugin "flowbite/plugin";
-@source "../../node_modules/flowbite"; */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --accent: #ef4444;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+@layer base {
+    body {
+        @apply font-sans bg-slate-50 text-slate-900 antialiased;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-outfit font-bold tracking-tight;
+    }
+
+    p {
+        @apply leading-relaxed;
+    }
+}
+
+@layer components {
+    .glass {
+        @apply backdrop-blur-md bg-white/80 border border-white/20;
+    }
+    
+    .glass-dark {
+        @apply backdrop-blur-md bg-gray-900/80 border border-white/10;
+    }
+    
+    .nav-link-premium {
+        @apply relative font-semibold transition-all duration-300 hover:text-blue-600;
+    }
+    
+    .nav-link-premium::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300;
+    }
+    
+    .nav-link-premium:hover::after {
+        @apply w-full;
+    }
+    
+    .card-premium {
+        @apply bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 overflow-hidden;
+    }
+}
+
+@layer utilities {
+    .bg-grid {
+        background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+    
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600;
+    }
+
+    .newspaper-border {
+        @apply border-gray-200 relative;
+    }
+
+    .newspaper-border::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-full h-[1px] bg-gray-200;
+    }
+
+    .line-clamp-news {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+    display: flex;
+    width: fit-content;
+    animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+

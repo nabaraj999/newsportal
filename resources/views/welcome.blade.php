@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Laravel</title>
+        <link rel="icon" type="image/x-icon" href="{{ !empty($siteCompany?->logo) ? asset($siteCompany->logo) : asset('favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ !empty($siteCompany?->logo) ? asset($siteCompany->logo) : asset('favicon.ico') }}">
+        <link rel="apple-touch-icon" href="{{ !empty($siteCompany?->logo) ? asset($siteCompany->logo) : asset('favicon.ico') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

@@ -1,110 +1,94 @@
-<footer class="bg-gradient-to-b from-gray-900 via-gray-950 to-black text-gray-100">
-    <div class="container mx-auto px-4 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <!-- About Section -->
-            <div class="space-y-4">
-                <h3 class="text-2xl font-black text-white mb-4">About Us</h3>
-                @if($company && $company->logo)
-                    <img src="{{ asset($company->logo) }}" alt="Company Logo" class="h-14 w-auto bg-white p-2 rounded-lg">
-                @endif
-                <p class="text-gray-400 leading-relaxed text-sm">
-                    @if($company)
-                        {{ $company->name }} - Your trusted source for quality news, in-depth analysis, and breaking stories from around the world.
+<footer class="bg-slate-950 text-slate-400 py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <!-- Brand & About -->
+            <div class="space-y-6">
+                <a href="{{ route('home') }}" class="inline-block">
+                    @if($company && $company->logo)
+                        <img class="h-12 w-auto brightness-0 invert" src="{{ asset($company->logo) }}" alt="{{ $company->name }}">
                     @else
-                        Your trusted source for quality news, in-depth analysis, and breaking stories from around the world.
+                        <div class="text-2xl font-black text-white flex items-center gap-2">
+                             <i class="fas fa-newspaper text-primary-500"></i>
+                             <span class="tracking-tighter uppercase">Global<span class="text-primary-500">News</span></span>
+                        </div>
                     @endif
+                </a>
+                <p class="text-sm leading-relaxed">
+                    Connecting you to the stories that matter. Delivering accurate, unbiased, and timely news from around the globe to your fingertips.
                 </p>
+                <div class="flex gap-4">
+                    @if($company && $company->facebook)
+                        <a href="{{ $company->facebook }}" target="_blank" class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-primary-600 hover:text-white transition-all">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    @endif
+                    @if($company && $company->instagram)
+                        <a href="{{ $company->instagram }}" target="_blank" class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    @endif
+                    @if($company && $company->youtube)
+                        <a href="{{ $company->youtube }}" target="_blank" class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    @endif
+                </div>
             </div>
 
-            <!-- Quick Links -->
-            <div class="space-y-4">
-                <h3 class="text-2xl font-black text-white mb-4">Quick Links</h3>
-                <ul class="space-y-3">
-                    <li><a href="{{ route('home') }}" class="text-gray-400 hover:text-white transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-blue-500 group-hover:translate-x-1 transition"></i> Home</a></li>
-                    @forelse($categories ?? [] as $cat)
-                        @if($loop->index < 4)
-                        <li><a href="{{ route('category', $cat->slug) }}" class="text-gray-400 hover:text-white transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-blue-500 group-hover:translate-x-1 transition"></i> {{ $cat->title }}</a></li>
-                        @endif
-                    @empty
-                    @endforelse
-                    <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-blue-500 group-hover:translate-x-1 transition"></i> Login</a></li>
+            <!-- Fast Links -->
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
+                    <span class="w-8 h-px bg-primary-500"></span> Quick Navigation
+                </h4>
+                <ul class="space-y-4">
+                    <li><a href="{{ route('home') }}" class="text-sm hover:text-white hover:translate-x-1 inline-block transition-all">Home</a></li>
+                    @foreach($categories->take(5) as $cat)
+                        <li><a href="{{ route('category', $cat->slug) }}" class="text-sm hover:text-white hover:translate-x-1 inline-block transition-all">{{ $cat->title }}</a></li>
+                    @endforeach
                 </ul>
             </div>
 
-            <!-- Contact Info -->
-            <div class="space-y-4">
-                <h3 class="text-2xl font-black text-white mb-4">Get in Touch</h3>
-                <ul class="space-y-4 text-sm">
-                    @if($company)
-                        <li class="flex items-start gap-3 group">
-                            <div class="bg-blue-600 p-2 rounded-lg group-hover:bg-blue-700 transition">
-                                <i class="fas fa-phone text-white"></i>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-xs">Phone</p>
-                                <p class="text-gray-300 font-semibold">{{ $company->phone }}</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3 group">
-                            <div class="bg-blue-600 p-2 rounded-lg group-hover:bg-blue-700 transition">
-                                <i class="fas fa-envelope text-white"></i>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-xs">Email</p>
-                                <p class="text-gray-300 font-semibold">{{ $company->email }}</p>
-                            </div>
-                        </li>
-                    @endif
-                </ul>
+            <!-- Categories -->
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
+                    <span class="w-8 h-px bg-primary-500"></span> Popular Topics
+                </h4>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($categories->shuffle()->take(10) as $cat)
+                        <a href="{{ route('category', $cat->slug) }}" class="bg-slate-900 hover:bg-primary-600 hover:text-white px-3 py-1.5 rounded text-xs transition-colors">
+                            {{ $cat->title }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
 
-            <!-- Follow Us -->
-            <div class="space-y-4">
-                <h3 class="text-2xl font-black text-white mb-4">Follow Us</h3>
-                <div class="flex gap-4 mb-6">
-                    @if($company)
-                        @if($company->facebook)
-                            <a href="{{ $company->facebook }}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-all hover:scale-110">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        @endif
-                        @if($company->instagram)
-                            <a href="{{ $company->instagram }}" target="_blank" class="bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-lg transition-all hover:scale-110">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        @endif
-                        @if($company->youtube)
-                            <a href="{{ $company->youtube }}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg transition-all hover:scale-110">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        @endif
-                    @endif
-                </div>
-                <div class="bg-blue-600 bg-opacity-20 border border-blue-600 rounded-lg p-4">
-                    <p class="text-sm text-gray-300"><strong>Subscribe:</strong> Get news updates delivered to your inbox</p>
-                </div>
+            <!-- Newsletter -->
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
+                    <span class="w-8 h-px bg-primary-500"></span> Stay Informed
+                </h4>
+                <p class="text-sm mb-6">Subscribe to our daily news digest and never miss a headline.</p>
+                <form class="space-y-3">
+                    <div class="relative">
+                        <input type="email" placeholder="Email Address" class="w-full bg-slate-900 border-slate-800 rounded px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all">
+                        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-primary-500 hover:text-primary-400">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <!-- Divider -->
-        <div class="bg-gray-800 h-0.5 my-8 rounded"></div>
-
-        <!-- Footer Bottom -->
-        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-4">
-            <p class="font-semibold">
-                &copy; {{ date('Y') }} 
-                @if($company)
-                    <span class="text-white">{{ $company->name }}</span>.
-                @else
-                    <span class="text-white">Global News Network</span>.
-                @endif
-                All rights reserved.
-            </p>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white transition font-semibold">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition font-semibold">Terms of Service</a>
-                <a href="#" class="hover:text-white transition font-semibold">Disclaimer</a>
-                <a href="#" class="hover:text-white transition font-semibold">Sitemap</a>
+        <!-- Bottom Footer -->
+        <div class="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-xs">
+                &copy; {{ date('Y') }} {{ $company ? $company->name : 'Global News Network' }}. All rights reserved. 
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-[10px] uppercase font-black tracking-widest">
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
+                <a href="#" class="hover:text-white transition-colors">Contact</a>
             </div>
         </div>
     </div>

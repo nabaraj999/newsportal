@@ -1,11 +1,19 @@
 <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-        <a href="index.html"> <img alt="image" src="/assets/img/logo.png" class="header-logo" />
-            <span class="logo-name">Otika</span>
+        <a href="{{ route('dashboard') }}" title="{{ $adminCompany->name ?? config('app.name', 'NewsPortal') }}">
+            @if (!empty($adminCompany?->logo))
+                <img alt="{{ $adminCompany->name }}" src="{{ asset($adminCompany->logo) }}" class="header-logo" />
+            @else
+                <img alt="News Portal" src="/assets/img/logo.png" class="header-logo" />
+            @endif
+            <span class="brand-text-wrap">
+                <span class="logo-name">{{ $adminCompany->name ?? config('app.name', 'NewsPortal') }}</span>
+                <small class="brand-subtitle">Admin Panel</small>
+            </span>
         </a>
     </div>
     <ul class="sidebar-menu">
-        <li class="menu-header">Main</li>
+        <li class="menu-header">Navigation</li>
         <li class="dropdown {{Request::routeIs('dashboard') ? 'active' : ''}}">
             <a href="{{ route('dashboard') }}" class="nav-link"><i data-feather="monitor"></i><span>Dashboard</span></a>
         </li>
@@ -20,11 +28,11 @@
         </li>
 
         <li class="dropdown {{ Request::routeIs('admin.article*') ? 'active' : '' }}">
-            <a href="{{route('admin.article.index')}}" class="nav-link"><i class="fas fa-newspaper"></i><span>Article</span></a>
+            <a href="{{route('admin.article.index')}}" class="nav-link"><i class="fas fa-newspaper"></i><span>Articles</span></a>
         </li>
 
         <li class="dropdown">
-            <a href="index.html" class="nav-link"><i data-feather="image"></i><span>Advertise</span></a>
+            <a href="{{ route('home') }}" target="_blank" class="nav-link"><i data-feather="external-link"></i><span>Visit Website</span></a>
         </li>
         {{-- <li class="dropdown">
             <a href="#" class="menu-toggle nav-link has-dropdown"><i
